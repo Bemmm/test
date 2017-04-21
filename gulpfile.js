@@ -14,6 +14,7 @@ var gulp = require('gulp'),
 gulp.task('connect', function() {
 	connect.server({
 		root: finishFolder,
+		port: process.env.PORT || 8080,
 		livereload: true,
 		livereloadPort: 3000,
 	    middleware: function (connect) {
