@@ -7,6 +7,11 @@ $locationProvider.hashPrefix('');
         templateUrl: './main.html',
         controller: 'mainController'
     })
+    .state('products', {
+        url: '/products',
+        templateUrl: './views/products/products.html',
+        controller: 'productsController'
+    })
     .state('order', {
         url: '/orders/{id}',
         templateUrl: "./views/orders/order-item/order-item.html",

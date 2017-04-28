@@ -3,11 +3,13 @@ angular.module('app', [
 	'ui.router',
 	'authorizationModule',
 	'ordersModule',
-	'profileModule'
+	'profileModule',
+	'productsModule'
 	])
 
 angular.module('authorizationModule', [])
 angular.module('ordersModule', []);
+angular.module('productsModule', []);
 angular.module('profileModule', []);
 angular.module('app')
 .config(function($stateProvider, $locationProvider) {
@@ -17,6 +19,11 @@ $locationProvider.hashPrefix('');
         url: '/',
         templateUrl: './main.html',
         controller: 'mainController'
+    })
+    .state('products', {
+        url: '/products',
+        templateUrl: './views/products/products.html',
+        controller: 'productsController'
     })
     .state('order', {
         url: '/orders/{id}',
@@ -144,6 +151,41 @@ angular.module('ordersModule')
 	};
 	return publicMethods;
 }])
+angular.module('productsModule')
+    .factory('mlabService', ['$http', 'config', function($http, config) {
+        var publicMethods = {
+            getProducts: function(type) {
+                // type='Smartphones'
+                return $http.get('https://api.mlab.com/api/1/databases/example/collections/products/?apiKey=cREe8UEMNaCB7qCP_gIIIQ1sm8Lry3mO', {
+                    params: {
+                        q: {'category': type}
+                    }
+                })
+                    .then(function(response) {
+                        console.log(response);
+                        return response.data;
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    })
+            },
+
+            createProduct: function(product) {
+                // type='Smartphones'
+                return $http.post('https://api.mlab.com/api/1/databases/example/collections/products/?apiKey=cREe8UEMNaCB7qCP_gIIIQ1sm8Lry3mO', product)
+                    .then(function(response) {
+                        console.log(response);
+                        return response.data;
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    })
+            }
+        };
+        return publicMethods;
+    }])
+
+
 angular.module('profileModule')
     .factory('profileService', ['$http', 'config', function($http, config) {
         var publicMethods = {
@@ -197,6 +239,41 @@ angular.module('app')
 	// _________________
 }]);
 
+angular.module('productsModule')
+.controller('productsController', function($scope, mlabService){
+	$scope.productModel = {
+		name: '',
+		model: '',
+		price: 0,
+		wifi: false,
+		category: null
+	};
+	$scope.filterModel = {
+		reverse:false
+	}
+
+	$scope.products = [];
+
+	$scope.sortBy = function(){
+		$scope.filterModel.reverse = !$scope.filterModel.reverse;
+	}
+
+	$scope.createProduct = function(){
+		mlabService.createProduct($scope.productModel).then(function(data){
+			$scope.products.push(data);
+		})
+	};
+
+	$scope.getProducts = function(type){
+		// type = 'Smartphones'
+		mlabService.getProducts(type).then(function(data){
+			$scope.products = data;
+		})
+	}
+	$scope.getProducts();
+
+
+});
 angular.module('profileModule')
 .controller('profileController', function($scope, $routeParams, profileService){
 	getUser();
@@ -215,6 +292,7 @@ angular.module('authorizationModule')
 		authorizationService.login($scope.signInModel)
 		.then(function(user){
 			$rootScope.logged = user;
+			$state.go('products')
 		})
 	};
 });

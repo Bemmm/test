@@ -3,5 +3,6 @@ angular.module('app', [
 	'ui.router',
 	'authorizationModule',
 	'ordersModule',
-	'profileModule'
+	'profileModule',
+	'productsModule'
 	])

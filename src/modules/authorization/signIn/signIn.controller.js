@@ -8,6 +8,7 @@ angular.module('authorizationModule')
 		authorizationService.login($scope.signInModel)
 		.then(function(user){
 			$rootScope.logged = user;
+			$state.go('products')
 		})
 	};
 });

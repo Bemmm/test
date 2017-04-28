@@ -1,0 +1,24 @@
+
+<form ng-submit="createProduct()">
+	<input ng-model="productModel.name" type="text" placeholder="Name">
+	<input ng-model="productModel.model" type="text" placeholder="Model">
+	<input ng-model="productModel.price" type="number" placeholder="Price">
+	<input ng-model="productModel.wifi" type="checkbox" placeholder="Wifi">
+	<select name="category" id="category" ng-model="productModel.category">
+		<option value="Electronic">Electronic</option>
+		<option value="Smartphones">Smartphones</option>
+	</select>
+	<button type="submit">Create</button>
+</form>
+<br>
+<br>
+<button ng-click="getProducts('Electronic')">Electronic</button>
+<button ng-click="getProducts('Smartphones')">Smartphones</button>
+<button ng-click="getProducts('unnamed')">unnamed</button>
+
+<button ng-click="sortBy()">Sort</button>
+<div ng-repeat="element in products | orderBy: 'name':filterModel.reverse">
+	{{element.name}}
+	{{element.price}}$
+	{{element.category}}
+</div>
